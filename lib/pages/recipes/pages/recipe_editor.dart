@@ -17,13 +17,17 @@ class _RecipeEditorState extends State<RecipeEditor> {
   Widget build(BuildContext context) {
     final route = ModalRoute.of(context);
     if (route == null) return const SizedBox.shrink();
-    recipe = route.settings.arguments as Recipe;
+    Recipe recipe = route.settings.arguments as Recipe;
 
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text(recipe.title),
+        middle: Text(recipe.title == ''
+            ? 'Nouvelle recette'
+            : 'Modification d\'une recette'),
       ),
-      child: const Center(child: Text('Éditeur de recettes')),
+      child: const Center(
+        child: Text('Éditeur de recettes ici'),
+      ),
     );
   }
 }

@@ -20,11 +20,11 @@ class RecipeWidget extends StatelessWidget {
           image: const AssetImage('assets/img/login_background.jpg'),
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
-            CupertinoColors.black.withOpacity(0.6),
+            CupertinoColors.black.withOpacity(0.5),
             BlendMode.darken,
           ),
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(9.0),
       ),
       child: CupertinoButton(
         padding: EdgeInsets.zero,

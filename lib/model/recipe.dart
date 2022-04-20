@@ -4,10 +4,10 @@ import 'package:http/http.dart';
 import 'package:meercook/model/storer.dart';
 
 class Recipe {
-  int id;
+  int? id;
   String title;
   String description;
-  int userId;
+  int? userId;
 
   factory Recipe.fromJson(Map<String, dynamic> json) => Recipe(
         id: json['id'] as int,
@@ -17,10 +17,10 @@ class Recipe {
       );
 
   Recipe({
-    required this.id,
-    required this.title,
+    this.id,
+    this.title = '',
     this.description = '',
-    required this.userId,
+    this.userId,
   });
 }
 
@@ -38,6 +38,14 @@ Future<List<Recipe>> getRecipes() async {
       final List res = jsonDecode(response.body);
       List<Recipe> recipesList = [];
       res.map((recipe) {
+        recipesList.add(Recipe.fromJson(recipe));
+        recipesList.add(Recipe.fromJson(recipe));
+        recipesList.add(Recipe.fromJson(recipe));
+        recipesList.add(Recipe.fromJson(recipe));
+        recipesList.add(Recipe.fromJson(recipe));
+        recipesList.add(Recipe.fromJson(recipe));
+        recipesList.add(Recipe.fromJson(recipe));
+        recipesList.add(Recipe.fromJson(recipe));
         recipesList.add(Recipe.fromJson(recipe));
       }).toList();
       return recipesList;
