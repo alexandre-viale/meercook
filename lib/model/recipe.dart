@@ -39,14 +39,6 @@ Future<List<Recipe>> getRecipes() async {
       List<Recipe> recipesList = [];
       res.map((recipe) {
         recipesList.add(Recipe.fromJson(recipe));
-        recipesList.add(Recipe.fromJson(recipe));
-        recipesList.add(Recipe.fromJson(recipe));
-        recipesList.add(Recipe.fromJson(recipe));
-        recipesList.add(Recipe.fromJson(recipe));
-        recipesList.add(Recipe.fromJson(recipe));
-        recipesList.add(Recipe.fromJson(recipe));
-        recipesList.add(Recipe.fromJson(recipe));
-        recipesList.add(Recipe.fromJson(recipe));
       }).toList();
       return recipesList;
     }

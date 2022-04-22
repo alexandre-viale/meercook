@@ -5,15 +5,17 @@ class RecipeWidget extends StatelessWidget {
   const RecipeWidget({
     Key? key,
     required this.recipe,
+    required this.onTap,
   }) : super(key: key);
 
   final Recipe recipe;
+  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 70,
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -24,12 +26,12 @@ class RecipeWidget extends StatelessWidget {
             BlendMode.darken,
           ),
         ),
-        borderRadius: BorderRadius.circular(9.0),
+        borderRadius: BorderRadius.circular(15.0),
       ),
       child: CupertinoButton(
         padding: EdgeInsets.zero,
         onPressed: () {
-          Navigator.pushNamed(context, '/recipeEditor', arguments: recipe);
+          onTap();
         },
         child: Text(
           recipe.title,
