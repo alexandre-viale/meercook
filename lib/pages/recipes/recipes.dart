@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meercook/model/recipe.dart';
-import 'package:meercook/pages/recipes/components/recipe.dart';
+import 'package:meercook/pages/recipes/components/recipe_element.dart';
 
 import 'components/sliver_nav.dart';
 
@@ -16,8 +16,8 @@ class _RecipesState extends State<Recipes> {
 
   @override
   void initState() {
-    super.initState();
     fetchRecipes();
+    super.initState();
   }
 
   fetchRecipes() async {
@@ -29,13 +29,7 @@ class _RecipesState extends State<Recipes> {
 
   @override
   Widget build(BuildContext context) {
-    final Color backgroundColor = const CupertinoDynamicColor.withBrightness(
-      color: CupertinoColors.white,
-      darkColor: CupertinoColors.black,
-    ).resolveFrom(context);
     return CupertinoPageScaffold(
-      backgroundColor: backgroundColor,
-      resizeToAvoidBottomInset: false,
       child: CustomScrollView(
         slivers: [
           const SliverNav(),
@@ -50,13 +44,19 @@ class _RecipesState extends State<Recipes> {
               ? SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
-                      return RecipeWidget(
+                      return RecipeElement(
                         recipe: recipesList[index],
                         onTap: () => Navigator.pushNamed(
                           context,
-                          '/recipe_details',
+                          '/recipes/details',
                           arguments: recipesList[index],
                         ),
+                        onDelete: () => {
+                          setState(() {
+                            deleteRecipe(recipesList[index].id!);
+                            recipesList.removeAt(index);
+                          })
+                        },
                       );
                     },
                     childCount: recipesList.length,
@@ -64,8 +64,12 @@ class _RecipesState extends State<Recipes> {
                 )
               : const SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.only(top: 20),
-                    child: CupertinoActivityIndicator(radius: 14),
+                    padding: EdgeInsets.only(
+                      top: 20,
+                    ),
+                    child: CupertinoActivityIndicator(
+                      radius: 14,
+                    ),
                   ),
                 )
         ],

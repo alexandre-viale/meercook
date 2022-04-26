@@ -15,18 +15,6 @@ class _SliverNavState extends State<SliverNav> {
   Widget build(BuildContext context) {
     return CupertinoSliverNavigationBar(
       largeTitle: const Text('Recettes'),
-      middle: isSearchOpened
-          ? AnimatedContainer(
-              duration: const Duration(seconds: 1000),
-              child: CupertinoSearchTextField(
-                focusNode: searchFocus,
-                placeholder: 'Ça marche pas encore',
-                onSubmitted: (String value) {
-                  print(value);
-                },
-              ),
-            )
-          : null,
       leading: CupertinoButton(
         padding: EdgeInsets.zero,
         child: isSearchOpened
@@ -39,6 +27,18 @@ class _SliverNavState extends State<SliverNav> {
           });
         },
       ),
+      middle: isSearchOpened
+          ? AnimatedContainer(
+              duration: const Duration(seconds: 1000),
+              child: CupertinoSearchTextField(
+                focusNode: searchFocus,
+                placeholder: 'Ça marche pas encore',
+                onChanged: (String value) {
+                  print(value);
+                },
+              ),
+            )
+          : null,
       trailing: CupertinoButton(
         padding: EdgeInsets.zero,
         child: const Icon(CupertinoIcons.add),

@@ -6,6 +6,7 @@ import 'package:meercook/pages/recipes/pages/recipe_details.dart';
 import 'package:meercook/pages/recipes/pages/recipe_editor.dart';
 import 'package:meercook/pages/recipes/recipes.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
+import 'dart:io' show Platform;
 
 void main() async {
   runApp(const Meercook());
@@ -18,12 +19,48 @@ class Meercook extends StatefulWidget {
   State<Meercook> createState() => _MeercookState();
 }
 
-class _MeercookState extends State<Meercook> {
+class _MeercookState extends State<Meercook> with WidgetsBindingObserver {
+  Brightness? _brightness;
+
   @override
   void initState() {
-    setOptimalDisplayMode();
+    WidgetsBinding.instance?.addObserver(this);
+    _brightness = WidgetsBinding.instance?.window.platformBrightness;
+    if (Platform.isAndroid) {
+      setOptimalDisplayMode();
+    }
     super.initState();
   }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    if (mounted) {
+      setState(() {
+        _brightness = WidgetsBinding.instance?.window.platformBrightness;
+      });
+    }
+
+    super.didChangePlatformBrightness();
+  }
+
+  CupertinoThemeData get _lightTheme => const CupertinoThemeData(
+      brightness: Brightness.light,
+      primaryColor: CupertinoColors.activeOrange,
+      scaffoldBackgroundColor: CupertinoColors.white,
+      primaryContrastingColor: CupertinoColors.black);
+
+  CupertinoThemeData get _darkTheme => const CupertinoThemeData(
+        brightness: Brightness.dark,
+        primaryColor: CupertinoColors.activeOrange,
+        scaffoldBackgroundColor: CupertinoColors.black,
+        primaryContrastingColor: CupertinoColors.white,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +71,7 @@ class _MeercookState extends State<Meercook> {
         DefaultWidgetsLocalizations.delegate,
       ],
       home: const Start(),
-      theme: const CupertinoThemeData(
-        primaryColor: CupertinoColors.activeOrange,
-        scaffoldBackgroundColor: CupertinoColors.white,
-        textTheme: CupertinoTextThemeData(
-          primaryColor: CupertinoColors.activeOrange,
-        ),
-      ),
+      theme: _brightness == Brightness.dark ? _darkTheme : _lightTheme,
       routes: {
         '/recipes': (context) => const Recipes(),
         '/recipes/editor': (context) => const RecipeEditor(),
@@ -89,7 +120,5 @@ Future<void> setOptimalDisplayMode() async {
   final DisplayMode mostOptimalMode =
       sameResolution.isNotEmpty ? sameResolution.first : active;
 
-  /// This setting is per session.
-  /// Please ensure this was placed with `initState` of your root widget.
   await FlutterDisplayMode.setPreferredMode(mostOptimalMode);
 }
