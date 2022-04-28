@@ -21,39 +21,24 @@ class _RecipeEditorState extends State<RecipeEditor> {
     Recipe recipe = route.settings.arguments as Recipe;
 
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text(recipe.title == ''
-            ? 'Nouvelle recette'
-            : 'Modification d\'une recette'),
-      ),
       child: Center(
         child: CustomScrollView(
           slivers: [
-            SliverAppBar(
-              expandedHeight: 200,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Image.asset(
-                  'assets/img/login_background.jpg',
-                  fit: BoxFit.cover,
-                  color: CupertinoColors.black.withOpacity(0.0),
-                  colorBlendMode: BlendMode.darken,
-                ),
-              ),
+            CupertinoSliverNavigationBar(
+              previousPageTitle: 'Annuler',
+              largeTitle: Text('Modifier ' + recipe.title),
             ),
             SliverToBoxAdapter(
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10),
-                    Text(
-                      recipe.description,
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
+              child: Hero(
+                tag: 'recipe_${recipe.id}',
+                child: Container(
+                  height: 250,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/img/login_background.jpg'),
+                      fit: BoxFit.cover,
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),

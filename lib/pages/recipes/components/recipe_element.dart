@@ -78,49 +78,52 @@ class _RecipeElementState extends State<RecipeElement> {
           },
         ),
       ],
-      child: Container(
-        height: 70,
-        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: const AssetImage('assets/img/login_background.jpg'),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              CupertinoColors.black.withOpacity(0.5),
-              BlendMode.darken,
+      child: Hero(
+        tag: 'recipe_${widget.recipe.id}',
+        child: Container(
+          height: 70,
+          margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: const AssetImage('assets/img/login_background.jpg'),
+              fit: BoxFit.cover,
+              colorFilter: ColorFilter.mode(
+                CupertinoColors.black.withOpacity(0.5),
+                BlendMode.darken,
+              ),
             ),
+            borderRadius: BorderRadius.circular(15.0),
           ),
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        child: CupertinoButton(
-          padding: EdgeInsets.zero,
-          onPressed: () {
-            widget.onTap();
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 15),
-                    child: Text(
-                      widget.recipe.title,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: CupertinoColors.white,
+          child: CupertinoButton(
+            padding: EdgeInsets.zero,
+            onPressed: () {
+              widget.onTap();
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 15),
+                      child: Text(
+                        widget.recipe.title,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: CupertinoColors.white,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const Icon(
-                  CupertinoIcons.right_chevron,
-                  color: CupertinoColors.white,
-                ),
-              ],
+                  const Icon(
+                    CupertinoIcons.right_chevron,
+                    color: CupertinoColors.white,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

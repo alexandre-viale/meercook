@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meercook/model/recipe.dart';
+import 'package:meercook/services/recipe_service.dart';
 import 'package:meercook/pages/recipes/components/recipe_element.dart';
 
 import 'components/sliver_nav.dart';
@@ -13,7 +14,8 @@ class Recipes extends StatefulWidget {
 
 class _RecipesState extends State<Recipes> {
   List<Recipe> recipesList = [];
-
+  List<Recipe> savedRecipesList = [];
+  bool fetching = false;
   @override
   void initState() {
     fetchRecipes();
@@ -21,9 +23,12 @@ class _RecipesState extends State<Recipes> {
   }
 
   fetchRecipes() async {
+    setState(() => fetching = true);
     List<Recipe> _recipesList = await getRecipes();
+    _recipesList.sort((a, b) => a.title.compareTo(b.title));
     setState(() {
-      recipesList = _recipesList;
+      recipesList = savedRecipesList = _recipesList;
+      fetching = false;
     });
   }
 
@@ -32,7 +37,22 @@ class _RecipesState extends State<Recipes> {
     return CupertinoPageScaffold(
       child: CustomScrollView(
         slivers: [
-          const SliverNav(),
+          SliverNav(
+            onSearch: (filterValue) {
+              setState(() {
+                recipesList = savedRecipesList
+                    .where((recipe) => recipe.title
+                        .toLowerCase()
+                        .contains(filterValue.toLowerCase()))
+                    .toList();
+              });
+            },
+            onStopSearch: () => setState(
+              () {
+                recipesList = savedRecipesList;
+              },
+            ),
+          ),
           recipesList.isNotEmpty
               ? CupertinoSliverRefreshControl(
                   onRefresh: () async {
@@ -51,27 +71,36 @@ class _RecipesState extends State<Recipes> {
                           '/recipes/details',
                           arguments: recipesList[index],
                         ),
-                        onDelete: () => {
+                        onDelete: () async {
+                          await deleteRecipe(recipesList[index].id!);
                           setState(() {
-                            deleteRecipe(recipesList[index].id!);
                             recipesList.removeAt(index);
-                          })
+                          });
                         },
                       );
                     },
                     childCount: recipesList.length,
                   ),
                 )
-              : const SliverToBoxAdapter(
+              : SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.only(
+                    padding: const EdgeInsets.only(
                       top: 20,
                     ),
-                    child: CupertinoActivityIndicator(
-                      radius: 14,
-                    ),
+                    child: fetching == true
+                        ? const CupertinoActivityIndicator(
+                            radius: 14,
+                          )
+                        : Center(
+                            child: Text(
+                              'Aucune recette',
+                              style: CupertinoTheme.of(context)
+                                  .textTheme
+                                  .navTitleTextStyle,
+                            ),
+                          ),
                   ),
-                )
+                ),
         ],
       ),
     );

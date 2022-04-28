@@ -1,9 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meercook/model/recipe.dart';
 
-class SliverNav extends StatefulWidget {
-  const SliverNav({Key? key}) : super(key: key);
+typedef StringCallback = void Function(String val);
 
+class SliverNav extends StatefulWidget {
+  const SliverNav(
+      {Key? key, required this.onSearch, required this.onStopSearch})
+      : super(key: key);
+  final StringCallback onSearch;
+  final VoidCallback onStopSearch;
   @override
   State<SliverNav> createState() => _SliverNavState();
 }
@@ -23,6 +28,9 @@ class _SliverNavState extends State<SliverNav> {
         onPressed: () {
           setState(() {
             isSearchOpened = !isSearchOpened;
+            if (!isSearchOpened) {
+              widget.onStopSearch();
+            }
             isSearchOpened ? searchFocus.requestFocus() : searchFocus.unfocus();
           });
         },
@@ -32,9 +40,9 @@ class _SliverNavState extends State<SliverNav> {
               duration: const Duration(seconds: 1000),
               child: CupertinoSearchTextField(
                 focusNode: searchFocus,
-                placeholder: 'Ça marche pas encore',
+                placeholder: 'Rechercher une recette',
                 onChanged: (String value) {
-                  print(value);
+                  widget.onSearch(value);
                 },
               ),
             )
