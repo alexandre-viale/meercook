@@ -1,52 +1,33 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:meercook/environment.dart';
 import 'package:meercook/model/recipe.dart';
-import 'package:meercook/model/storer.dart';
+import 'package:meercook/services/http_service.dart';
 
 Future<bool> deleteRecipe(int id) async {
-  final Response response = await get(
-    Uri(
-      host: Environment.apiHost,
-      port: Environment.apiPort,
-      path: '${Environment.apiPath}/recipes/$id',
-      scheme: 'http',
-    ),
-    headers: {
-      'Authorization': 'Bearer ${await Storer.getAccessToken()}',
-    },
+  final Response findResponse = await customRequest(
+    requestMethod: get,
+    path: '/recipes/$id',
   );
-  print(response.statusCode);
-  if (response.statusCode == 200) {
-    final Response response = await post(
-      Uri(
-        host: Environment.apiHost,
-        port: Environment.apiPort,
-        path: '${Environment.apiPath}/recipes/delete/$id',
-        scheme: 'http',
-      ),
-      headers: {
-        'Authorization': 'Bearer ${await Storer.getAccessToken()}',
-      },
-    );
-    if (response.statusCode == 200) {
-      return true;
-    }
+  if (findResponse.statusCode != 200) {
+    return false;
   }
-  return false;
+  final Response deleteResponse = await customRequest(
+    requestMethod: delete,
+    path: '/recipes/delete/$id',
+  );
+  if (deleteResponse.statusCode != 200) {
+    return false;
+  }
+  return true;
 }
 
 Future<List<Recipe>> getRecipes() async {
-  final uri = Uri(
-      host: Environment.apiHost,
-      port: Environment.apiPort,
-      path: '${Environment.apiPath}/recipes',
-      scheme: 'http');
   try {
-    final response = await get(uri, headers: {
-      'Authorization': 'Bearer ${await Storer.getAccessToken()}',
-    });
+    final Response response = await customRequest(
+      requestMethod: get,
+      path: '/recipes',
+    );
     if (response.statusCode == 200) {
       final List res = jsonDecode(response.body);
       List<Recipe> recipesList = [];

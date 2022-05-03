@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:meercook/environment.dart';
 import 'package:meercook/model/storer.dart';
+import 'package:meercook/services/http_service.dart';
 
 class User {
   int? id;
@@ -46,16 +46,15 @@ class User {
   }
 
   login() async {
-    final url = Uri(
-        host: Environment.apiHost,
-        port: Environment.apiPort,
-        path: '${Environment.apiPath}/user/login',
-        scheme: 'http');
     try {
-      final response = await post(url, body: {
-        'emailOrUserName': email,
-        'password': password,
-      });
+      final response = await customRequest(
+        requestMethod: post,
+        path: '/user/login',
+        body: {
+          'emailOrUserName': email,
+          'password': password,
+        },
+      );
       if (response.statusCode == 200) {
         final Map res = jsonDecode(response.body);
         id = res['user']['id'];

@@ -53,13 +53,11 @@ class _RecipesState extends State<Recipes> {
               },
             ),
           ),
-          recipesList.isNotEmpty
-              ? CupertinoSliverRefreshControl(
-                  onRefresh: () async {
-                    await fetchRecipes();
-                  },
-                )
-              : const SliverToBoxAdapter(),
+          CupertinoSliverRefreshControl(
+            onRefresh: () async {
+              await fetchRecipes();
+            },
+          ),
           recipesList.isNotEmpty
               ? SliverList(
                   delegate: SliverChildBuilderDelegate(

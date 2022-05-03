@@ -1,20 +1,15 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:meercook/environment.dart';
 import 'package:meercook/model/recipe_step.dart';
-import 'package:meercook/model/storer.dart';
+import 'package:meercook/services/http_service.dart';
 
 Future<List<RecipeStep>> getStepsByRecipeId(recipeId) async {
-  final uri = Uri(
-      host: Environment.apiHost,
-      port: Environment.apiPort,
-      path: '${Environment.apiPath}/recipes/$recipeId/steps/',
-      scheme: 'http');
   try {
-    final response = await get(uri, headers: {
-      'Authorization': 'Bearer ${await Storer.getAccessToken()}',
-    });
+    final response = await customRequest(
+      requestMethod: get,
+      path: '/recipes/$recipeId/steps',
+    );
     if (response.statusCode == 200) {
       final Map res = jsonDecode(response.body);
       List<RecipeStep> steps = [];

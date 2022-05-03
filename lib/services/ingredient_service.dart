@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:meercook/environment.dart';
 import 'package:meercook/model/ingredient.dart';
 import 'package:meercook/model/storer.dart';
+import 'package:meercook/services/http_service.dart';
 
 Future<List<Ingredient>> getIngredientsByRecipeId(recipeId) async {
   final uri = Uri(
@@ -12,9 +13,8 @@ Future<List<Ingredient>> getIngredientsByRecipeId(recipeId) async {
       path: '${Environment.apiPath}/recipes/$recipeId/ingredients',
       scheme: 'http');
   try {
-    final response = await get(uri, headers: {
-      'Authorization': 'Bearer ${await Storer.getAccessToken()}',
-    });
+    final response = await customRequest(
+        requestMethod: get, path: '/recipes/$recipeId/ingredients');
     if (response.statusCode == 200) {
       final Map res = jsonDecode(response.body);
       List<Ingredient> ingredients = [];
