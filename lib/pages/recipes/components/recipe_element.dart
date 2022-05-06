@@ -32,7 +32,11 @@ class _RecipeElementState extends State<RecipeElement> {
           ),
           onPressed: () {
             Navigator.pop(context);
-            widget.onTap();
+            Navigator.pushNamed(
+              context,
+              '/recipes/editor',
+              arguments: widget.recipe,
+            );
           },
         ),
         CupertinoContextMenuAction(

@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:meercook/model/ingredient.dart';
+import 'package:meercook/model/recipe_step.dart';
 
 class Recipe {
   int? id;
   String title;
   String description;
   int? userId;
-  List<Ingredient>? ingredients;
-  List<Step>? steps;
+  List<Ingredient> ingredients = [];
+  List<RecipeStep> steps = [];
 
   factory Recipe.fromJson(Map<String, dynamic> json) => Recipe(
         id: json['id'] as int,

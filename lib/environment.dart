@@ -1,6 +1,6 @@
 class Environment {
   // local
-  static const String apiHost = '192.168.1.99'; //192.168.1.99
+  static const String apiHost = 'localhost'; //192.168.1.99
   static const String apiPath = '/meercook-server';
   static const dynamic apiPort = 2000;
   // production

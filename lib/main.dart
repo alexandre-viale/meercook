@@ -50,10 +50,11 @@ class _MeercookState extends State<Meercook> with WidgetsBindingObserver {
   }
 
   CupertinoThemeData get _lightTheme => const CupertinoThemeData(
-      brightness: Brightness.light,
-      primaryColor: CupertinoColors.activeOrange,
-      scaffoldBackgroundColor: CupertinoColors.white,
-      primaryContrastingColor: CupertinoColors.black);
+        brightness: Brightness.light,
+        primaryColor: CupertinoColors.activeOrange,
+        scaffoldBackgroundColor: CupertinoColors.white,
+        primaryContrastingColor: CupertinoColors.black,
+      );
 
   CupertinoThemeData get _darkTheme => const CupertinoThemeData(
         brightness: Brightness.dark,
@@ -74,8 +75,8 @@ class _MeercookState extends State<Meercook> with WidgetsBindingObserver {
       theme: _brightness == Brightness.dark ? _darkTheme : _lightTheme,
       routes: {
         '/recipes': (context) => const Recipes(),
-        '/recipes/editor': (context) => const RecipeEditor(),
         '/recipes/details': (context) => const RecipeDetails(),
+        '/recipes/editor': (context) => const RecipeEditor(),
         '/login': (context) => const LoginPage(),
       },
     );

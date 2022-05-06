@@ -44,8 +44,10 @@ class _RecipeDetailsState extends State<RecipeDetails> {
             child: Hero(
               tag: 'recipe_${recipe.id}',
               child: Container(
+                margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                 height: 250,
                 decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
                   image: DecorationImage(
                     image: AssetImage('assets/img/login_background.jpg'),
                     fit: BoxFit.cover,
