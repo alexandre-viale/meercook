@@ -38,6 +38,29 @@ Future<List<Recipe>> getRecipes() async {
     }
     return [];
   } catch (e) {
-    return [];
+    rethrow;
+  }
+}
+
+Future<bool> saveRecipe(Recipe recipe) async {
+  try {
+    Map<String, dynamic> body = {
+      'title': recipe.title,
+      'description': recipe.description
+    };
+    if (recipe.id != null) {
+      body['id'] = recipe.id.toString();
+    }
+    final Response response = await customRequest(
+      requestMethod: post,
+      path: '/recipes/save',
+      body: body,
+    );
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
+  } catch (e) {
+    rethrow;
   }
 }

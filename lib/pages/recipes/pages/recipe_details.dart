@@ -3,46 +3,65 @@ import 'package:flutter/material.dart';
 import 'package:meercook/model/ingredient.dart';
 import 'package:meercook/model/recipe.dart';
 import 'package:meercook/model/recipe_step.dart';
+import 'package:meercook/pages/recipes/pages/recipe_editor.dart';
 import 'package:meercook/services/ingredient_service.dart';
 import 'package:meercook/services/step_service.dart';
 
 class RecipeDetails extends StatefulWidget {
   const RecipeDetails({
     Key? key,
+    required this.recipe,
   }) : super(key: key);
+  final Recipe recipe;
   @override
   State<RecipeDetails> createState() => _RecipeDetailsState();
 }
 
 class _RecipeDetailsState extends State<RecipeDetails> {
-  late Recipe recipe;
+  late Recipe _recipe;
+  @override
+  void initState() {
+    _recipe = Recipe(
+      id: widget.recipe.id,
+      title: widget.recipe.title,
+      description: widget.recipe.description,
+      userId: widget.recipe.userId,
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final route = ModalRoute.of(context);
-    if (route == null) return const SizedBox.shrink();
-    Recipe recipe = route.settings.arguments as Recipe;
     return CupertinoPageScaffold(
       child: CustomScrollView(
         slivers: [
           CupertinoSliverNavigationBar(
             previousPageTitle: 'Recettes',
-            largeTitle: Text(recipe.title),
+            largeTitle: Text(_recipe.title),
             trailing: CupertinoButton(
               padding: EdgeInsets.zero,
               child: const Icon(
                 CupertinoIcons.pencil,
                 color: CupertinoColors.activeOrange,
               ),
-              onPressed: () => Navigator.pushNamed(
-                context,
-                '/recipes/editor',
-                arguments: recipe,
-              ),
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => RecipeEditor(recipe: _recipe),
+                  ),
+                );
+                if (result != null) {
+                  setState(() {
+                    _recipe = result;
+                  });
+                }
+              },
             ),
           ),
           SliverToBoxAdapter(
             child: Hero(
-              tag: 'recipe_${recipe.id}',
+              tag: 'recipe_${_recipe.id}',
               child: Container(
                 margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                 height: 250,
@@ -68,10 +87,10 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                         CupertinoTheme.of(context).textTheme.navTitleTextStyle,
                   ),
                   const SizedBox(height: 10),
-                  recipe.description == ''
+                  _recipe.description == ''
                       ? const SizedBox.shrink()
                       : Text(
-                          recipe.description,
+                          _recipe.description,
                           style: const TextStyle(
                             fontSize: 16,
                           ),
@@ -88,7 +107,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                   ),
                   const SizedBox(height: 10),
                   FutureBuilder(
-                    future: getIngredientsByRecipeId(recipe.id),
+                    future: getIngredientsByRecipeId(_recipe.id),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return const CupertinoActivityIndicator();
@@ -131,7 +150,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                   ),
                   const SizedBox(height: 10),
                   FutureBuilder(
-                    future: getStepsByRecipeId(recipe.id),
+                    future: getStepsByRecipeId(_recipe.id),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return const CupertinoActivityIndicator();

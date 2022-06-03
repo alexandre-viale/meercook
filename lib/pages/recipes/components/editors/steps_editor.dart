@@ -27,13 +27,8 @@ class _StepsEditorState extends State<StepsEditor> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text(
-          'Étapes',
-          style: CupertinoTheme.of(context).textTheme.navTitleTextStyle,
-        ),
-        const SizedBox(height: 10),
         ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           cacheExtent: 0,
@@ -44,6 +39,15 @@ class _StepsEditorState extends State<StepsEditor> {
             return Padding(
               padding: const EdgeInsets.only(bottom: 5.0),
               child: CupertinoTextField(
+                suffix: CupertinoButton(
+                  padding: const EdgeInsets.all(0),
+                  child: const Icon(CupertinoIcons.clear_thick_circled),
+                  onPressed: () {
+                    setState(() {
+                      steps.removeAt(index);
+                    });
+                  },
+                ),
                 expands: true,
                 minLines: null,
                 maxLines: null,
@@ -56,26 +60,31 @@ class _StepsEditorState extends State<StepsEditor> {
                   ),
                 ),
                 controller: _stepControllers[steps[index].id.toString()],
-                placeholder: 'Ingrédient',
+                placeholder: 'Étape',
               ),
             );
           },
         ),
-        const SizedBox(height: 10),
         CupertinoButton(
-          child: const Icon(CupertinoIcons.add_circled),
-          onPressed: () {
-            setState(() {
-              steps.add(
-                RecipeStep(
-                    recipeId: widget.recipe.id!,
-                    text: '',
-                    sortId: steps.length),
-              );
-            });
-          },
+          padding: const EdgeInsets.all(0),
+          child: Row(
+            children: const [
+              Icon(CupertinoIcons.add_circled),
+              SizedBox(width: 5),
+              Text(
+                'Ajouter une étape',
+              ),
+            ],
+          ),
+          onPressed: () => setState(
+            () => steps.add(
+              RecipeStep(
+                sortId: steps.length + 1,
+                recipeId: widget.recipe.id!,
+              ),
+            ),
+          ),
         ),
-        const SizedBox(height: 40),
       ],
     );
   }

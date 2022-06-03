@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meercook/model/recipe.dart';
-
-typedef StringCallback = void Function(String val);
+import 'package:meercook/pages/recipes/pages/recipe_editor.dart';
+import 'package:meercook/utils/callbacks.dart';
 
 class SliverNav extends StatefulWidget {
   const SliverNav(
@@ -51,8 +51,12 @@ class _SliverNavState extends State<SliverNav> {
         padding: EdgeInsets.zero,
         child: const Icon(CupertinoIcons.add),
         onPressed: () {
-          Navigator.of(context)
-              .pushNamed('/recipes/editor', arguments: Recipe());
+          Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (context) => RecipeEditor(recipe: Recipe()),
+            ),
+          );
         },
       ),
     );

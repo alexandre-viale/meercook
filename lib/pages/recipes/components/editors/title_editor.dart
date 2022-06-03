@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meercook/model/recipe.dart';
+import 'package:meercook/utils/callbacks.dart';
 
 class TitleEditor extends StatefulWidget {
-  const TitleEditor({Key? key, required this.recipe}) : super(key: key);
+  const TitleEditor({Key? key, required this.recipe, required this.onModified})
+      : super(key: key);
   final Recipe recipe;
+  final StringCallback onModified;
   @override
   State<TitleEditor> createState() => _TitleEditorState();
 }
@@ -29,6 +32,9 @@ class _TitleEditorState extends State<TitleEditor> {
         CupertinoTextField(
           controller: _controller,
           placeholder: 'Titre',
+          onChanged: (value) {
+            widget.onModified(value);
+          },
         )
       ],
     );

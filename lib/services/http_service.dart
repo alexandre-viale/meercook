@@ -2,7 +2,7 @@ import 'package:http/http.dart';
 import 'package:meercook/environment.dart';
 import 'package:meercook/model/storer.dart';
 
-Future<Response> customRequest({
+Future<dynamic> customRequest({
   required Function requestMethod,
   required String path,
   bool useCredentials = true,
@@ -24,18 +24,26 @@ Future<Response> customRequest({
     if (requestMethod == get) {
       response = await requestMethod(uri, headers: headers);
     } else {
+      print('Request body: $body');
+      print('Request headers: $headers');
+      print('Request uri: $uri');
+      print(await requestMethod(
+        uri,
+        headers: headers,
+        body: body,
+      ));
       response = await requestMethod(
         uri,
         headers: headers,
         body: body,
       );
     }
+
     if (response.statusCode == 401) {
       await Storer.setAccessToken('');
     }
     return response;
   } catch (e) {
-    print(e);
-    return Response('', 500);
+    rethrow;
   }
 }

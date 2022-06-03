@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meercook/model/recipe.dart';
+import 'package:meercook/utils/callbacks.dart';
 
 class DescriptionEditor extends StatefulWidget {
-  const DescriptionEditor({Key? key, required this.recipe}) : super(key: key);
+  const DescriptionEditor(
+      {Key? key, required this.recipe, required this.onModified})
+      : super(key: key);
   final Recipe recipe;
+  final StringCallback onModified;
   @override
   State<DescriptionEditor> createState() => _DescriptionEditorState();
 }
@@ -30,6 +34,9 @@ class _DescriptionEditorState extends State<DescriptionEditor> {
           expands: true,
           controller: _controller,
           placeholder: 'Description',
+          onChanged: (value) {
+            widget.onModified(value);
+          },
         )
       ],
     );

@@ -1,27 +1,42 @@
 import 'package:flutter/cupertino.dart';
+import 'package:meercook/globals.dart';
 import 'package:meercook/model/recipe.dart';
 import 'package:meercook/pages/recipes/components/editors/description_editor.dart';
 import 'package:meercook/pages/recipes/components/editors/ingredients_editor.dart';
 import 'package:meercook/pages/recipes/components/editors/steps_editor.dart';
 import 'package:meercook/pages/recipes/components/editors/title_editor.dart';
 import 'package:meercook/services/ingredient_service.dart';
+import 'package:meercook/services/recipe_service.dart';
 import 'package:meercook/services/step_service.dart';
 
 class RecipeEditor extends StatefulWidget {
   const RecipeEditor({
     Key? key,
+    required this.recipe,
   }) : super(key: key);
-
+  final Recipe recipe;
   @override
   State<RecipeEditor> createState() => _RecipeEditorState();
 }
 
 class _RecipeEditorState extends State<RecipeEditor> {
-  late Recipe recipe;
   bool fetching = true;
+  late Recipe _recipe;
+  @override
+  void initState() {
+    _recipe = Recipe(
+      id: widget.recipe.id,
+      title: widget.recipe.title,
+      description: widget.recipe.description,
+      userId: widget.recipe.userId,
+    );
+    fetchRecipeDetails();
+    super.initState();
+  }
+
   void fetchRecipeDetails() async {
-    recipe.ingredients = await getIngredientsByRecipeId(recipe.id);
-    recipe.steps = await getStepsByRecipeId(recipe.id);
+    _recipe.ingredients = await getIngredientsByRecipeId(_recipe.id);
+    _recipe.steps = await getStepsByRecipeId(_recipe.id);
     if (mounted) {
       setState(() {
         fetching = false;
@@ -31,21 +46,19 @@ class _RecipeEditorState extends State<RecipeEditor> {
 
   @override
   Widget build(BuildContext context) {
-    final route = ModalRoute.of(context);
-    if (route == null) return const SizedBox.shrink();
-    recipe = route.settings.arguments as Recipe;
-    fetchRecipeDetails();
     return CupertinoPageScaffold(
       child: Center(
         child: CustomScrollView(
           slivers: [
             CupertinoSliverNavigationBar(
               previousPageTitle: 'Annuler',
-              largeTitle: Text('Modifier ' + recipe.title),
+              largeTitle: _recipe.id == null
+                  ? const Text('Nouvelle recette')
+                  : Text('Modifier ' + widget.recipe.title),
             ),
             SliverToBoxAdapter(
               child: Hero(
-                tag: 'recipe_${recipe.id}',
+                tag: 'recipe_${_recipe.id}',
                 child: Container(
                   margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                   height: 250,
@@ -65,31 +78,88 @@ class _RecipeEditorState extends State<RecipeEditor> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                child: TitleEditor(recipe: recipe),
+                child: TitleEditor(
+                  recipe: _recipe,
+                  onModified: (value) => _recipe.title = value,
+                ),
               ),
             ),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                child: DescriptionEditor(recipe: recipe),
+                child: DescriptionEditor(
+                  recipe: _recipe,
+                  onModified: (value) => _recipe.description = value,
+                ),
               ),
             ),
             SliverToBoxAdapter(
               child: Container(
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                child: fetching
-                    ? const CupertinoActivityIndicator()
-                    : IngredientsEditor(recipe: recipe),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Ingrédients',
+                      style: CupertinoTheme.of(context)
+                          .textTheme
+                          .navTitleTextStyle,
+                    ),
+                    const SizedBox(height: 10),
+                    fetching
+                        ? const CupertinoActivityIndicator()
+                        : IngredientsEditor(recipe: _recipe),
+                  ],
+                ),
               ),
             ),
             SliverToBoxAdapter(
               child: Container(
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                child: fetching
-                    ? const CupertinoActivityIndicator()
-                    : StepsEditor(recipe: recipe),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Étapes',
+                      style: CupertinoTheme.of(context)
+                          .textTheme
+                          .navTitleTextStyle,
+                    ),
+                    const SizedBox(height: 10),
+                    fetching
+                        ? const CupertinoActivityIndicator()
+                        : StepsEditor(recipe: _recipe),
+                  ],
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                alignment: AlignmentDirectional.center,
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 30),
+                child: CupertinoButton.filled(
+                  child: const Text(
+                    'Sauvegarder',
+                    style: TextStyle(
+                      color: CupertinoColors.white,
+                    ),
+                  ),
+                  onPressed: () async {
+                    await saveRecipe(_recipe);
+                    if (_recipe.id == null) {
+                      Navigator.pop(context);
+                    } else {
+                      globalRecipesList
+                          .removeWhere((element) => element.id == _recipe.id);
+                      globalRecipesList.add(_recipe);
+                      globalRecipesList
+                          .sort((a, b) => a.title.compareTo(b.title));
+                      Navigator.pop(context, _recipe);
+                    }
+                  },
+                ),
               ),
             )
           ],

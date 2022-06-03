@@ -24,8 +24,8 @@ class _MeercookState extends State<Meercook> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addObserver(this);
-    _brightness = WidgetsBinding.instance?.window.platformBrightness;
+    WidgetsBinding.instance.addObserver(this);
+    _brightness = WidgetsBinding.instance.window.platformBrightness;
     if (Platform.isAndroid) {
       setOptimalDisplayMode();
     }
@@ -34,7 +34,7 @@ class _MeercookState extends State<Meercook> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -42,7 +42,7 @@ class _MeercookState extends State<Meercook> with WidgetsBindingObserver {
   void didChangePlatformBrightness() {
     if (mounted) {
       setState(() {
-        _brightness = WidgetsBinding.instance?.window.platformBrightness;
+        _brightness = WidgetsBinding.instance.window.platformBrightness;
       });
     }
 
@@ -75,8 +75,6 @@ class _MeercookState extends State<Meercook> with WidgetsBindingObserver {
       theme: _brightness == Brightness.dark ? _darkTheme : _lightTheme,
       routes: {
         '/recipes': (context) => const Recipes(),
-        '/recipes/details': (context) => const RecipeDetails(),
-        '/recipes/editor': (context) => const RecipeEditor(),
         '/login': (context) => const LoginPage(),
       },
     );

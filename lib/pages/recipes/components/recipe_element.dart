@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meercook/model/recipe.dart';
+import 'package:meercook/pages/recipes/pages/recipe_editor.dart';
 
 class RecipeElement extends StatefulWidget {
   const RecipeElement({
@@ -32,10 +33,11 @@ class _RecipeElementState extends State<RecipeElement> {
           ),
           onPressed: () {
             Navigator.pop(context);
-            Navigator.pushNamed(
+            Navigator.push(
               context,
-              '/recipes/editor',
-              arguments: widget.recipe,
+              CupertinoPageRoute(
+                builder: (context) => RecipeEditor(recipe: widget.recipe),
+              ),
             );
           },
         ),

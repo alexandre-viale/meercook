@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () {
                 if (res == 200) {
                   Navigator.pop(context);
-                  Navigator.of(context).pushReplacementNamed('/home');
+                  Navigator.of(context).pushReplacementNamed('/recipes');
                 } else {
                   Navigator.pop(context);
                 }

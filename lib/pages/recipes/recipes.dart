@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:meercook/globals.dart';
 import 'package:meercook/model/recipe.dart';
+import 'package:meercook/pages/recipes/pages/recipe_details.dart';
 import 'package:meercook/services/recipe_service.dart';
 import 'package:meercook/pages/recipes/components/recipe_element.dart';
 
@@ -30,6 +32,7 @@ class _RecipesState extends State<Recipes> {
       recipesList = savedRecipesList = _recipesList;
       fetching = false;
     });
+    globalRecipesList = _recipesList;
   }
 
   @override
@@ -64,11 +67,20 @@ class _RecipesState extends State<Recipes> {
                     (BuildContext context, int index) {
                       return RecipeElement(
                         recipe: recipesList[index],
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          '/recipes/details',
-                          arguments: recipesList[index],
-                        ),
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) => RecipeDetails(
+                                recipe: recipesList[index],
+                              ),
+                            ),
+                          );
+                          print(globalRecipesList);
+                          setState(() {
+                            recipesList = savedRecipesList = globalRecipesList;
+                          });
+                        },
                         onDelete: () async {
                           await deleteRecipe(recipesList[index].id!);
                           setState(() {

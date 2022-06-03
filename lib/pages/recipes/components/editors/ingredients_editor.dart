@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meercook/model/ingredient.dart';
 import 'package:meercook/model/recipe.dart';
-import 'package:meercook/services/ingredient_service.dart';
 
 class IngredientsEditor extends StatefulWidget {
   const IngredientsEditor({Key? key, required this.recipe}) : super(key: key);
@@ -12,13 +11,12 @@ class IngredientsEditor extends StatefulWidget {
 
 class _IngredientsEditorState extends State<IngredientsEditor> {
   List<Ingredient> ingredients = [];
-  List<Ingredient> savedIngredients = [];
   final Map<String, TextEditingController> _ingredientControllers = {};
 
   @override
   void initState() {
     super.initState();
-    ingredients = savedIngredients = widget.recipe.ingredients;
+    ingredients = widget.recipe.ingredients;
     for (final ingredient in ingredients) {
       _ingredientControllers[ingredient.id.toString()] =
           TextEditingController(text: ingredient.text);
@@ -30,12 +28,6 @@ class _IngredientsEditorState extends State<IngredientsEditor> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Ingrédients',
-          textAlign: TextAlign.left,
-          style: CupertinoTheme.of(context).textTheme.navTitleTextStyle,
-        ),
-        const SizedBox(height: 10),
         ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           cacheExtent: 0,
@@ -46,15 +38,41 @@ class _IngredientsEditorState extends State<IngredientsEditor> {
             return Padding(
               padding: const EdgeInsets.only(bottom: 5.0),
               child: CupertinoTextField(
-                maxLines: null,
-                minLines: null,
-                expands: true,
+                suffix: CupertinoButton(
+                  padding: const EdgeInsets.all(0),
+                  child: const Icon(CupertinoIcons.clear_thick_circled),
+                  onPressed: () {
+                    setState(() {
+                      ingredients.removeAt(index);
+                    });
+                  },
+                ),
+                maxLines: 1,
+                minLines: 1,
+                expands: false,
                 controller:
                     _ingredientControllers[ingredients[index].id.toString()],
                 placeholder: 'Ingrédient',
               ),
             );
           },
+        ),
+        CupertinoButton(
+          padding: const EdgeInsets.all(0),
+          child: Row(
+            children: const [
+              Icon(CupertinoIcons.add_circled),
+              SizedBox(width: 5),
+              Text(
+                'Ajouter un ingrédient',
+              ),
+            ],
+          ),
+          onPressed: () => setState(
+            () => ingredients.add(
+              Ingredient(recipeId: widget.recipe.id!),
+            ),
+          ),
         ),
       ],
     );
