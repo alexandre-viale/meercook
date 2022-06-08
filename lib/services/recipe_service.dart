@@ -42,7 +42,7 @@ Future<List<Recipe>> getRecipes() async {
   }
 }
 
-Future<bool> saveRecipe(Recipe recipe) async {
+Future<int?> saveRecipe(Recipe recipe) async {
   try {
     Map<String, dynamic> body = {
       'title': recipe.title,
@@ -57,9 +57,9 @@ Future<bool> saveRecipe(Recipe recipe) async {
       body: body,
     );
     if (response.statusCode == 200) {
-      return true;
+      return jsonDecode(response.body)['insertId'];
     }
-    return false;
+    return null;
   } catch (e) {
     rethrow;
   }

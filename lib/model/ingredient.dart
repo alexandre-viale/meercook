@@ -1,12 +1,12 @@
 class Ingredient {
   int? id;
   String text;
-  int recipeId;
+  int? recipeId;
 
   Ingredient({
     this.id,
-    this.text = '',
-    required this.recipeId,
+    required this.text,
+    this.recipeId,
   });
 
   factory Ingredient.fromJson(Map<String, dynamic> json) => Ingredient(

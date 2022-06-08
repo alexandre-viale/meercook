@@ -22,6 +22,7 @@ class RecipeEditor extends StatefulWidget {
 class _RecipeEditorState extends State<RecipeEditor> {
   bool fetching = true;
   late Recipe _recipe;
+  bool saving = false;
   @override
   void initState() {
     _recipe = Recipe(
@@ -109,7 +110,12 @@ class _RecipeEditorState extends State<RecipeEditor> {
                     const SizedBox(height: 10),
                     fetching
                         ? const CupertinoActivityIndicator()
-                        : IngredientsEditor(recipe: _recipe),
+                        : IngredientsEditor(
+                            recipe: _recipe,
+                            onModified: (ingredients) => {
+                              _recipe.ingredients = ingredients,
+                            },
+                          ),
                   ],
                 ),
               ),
@@ -140,22 +146,32 @@ class _RecipeEditorState extends State<RecipeEditor> {
                 alignment: AlignmentDirectional.center,
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 30),
                 child: CupertinoButton.filled(
-                  child: const Text(
-                    'Sauvegarder',
-                    style: TextStyle(
-                      color: CupertinoColors.white,
-                    ),
-                  ),
+                  child: saving == true
+                      ? const CupertinoActivityIndicator()
+                      : const Text(
+                          'Sauvegarder',
+                          style: TextStyle(
+                            color: CupertinoColors.white,
+                          ),
+                        ),
                   onPressed: () async {
-                    await saveRecipe(_recipe);
+                    setState(() {
+                      saving = true;
+                    });
+                    int? insertId = await saveRecipe(_recipe);
+                    _recipe.id ??= insertId;
+                    await saveIngredientsByRecipeId(
+                        _recipe.id, _recipe.ingredients);
+                    _recipe.ingredients =
+                        await getIngredientsByRecipeId(_recipe.id);
+                    globalRecipesList
+                        .removeWhere((element) => element.id == _recipe.id);
+                    globalRecipesList.add(_recipe);
+                    globalRecipesList
+                        .sort((a, b) => a.title.compareTo(b.title));
                     if (_recipe.id == null) {
                       Navigator.pop(context);
                     } else {
-                      globalRecipesList
-                          .removeWhere((element) => element.id == _recipe.id);
-                      globalRecipesList.add(_recipe);
-                      globalRecipesList
-                          .sort((a, b) => a.title.compareTo(b.title));
                       Navigator.pop(context, _recipe);
                     }
                   },

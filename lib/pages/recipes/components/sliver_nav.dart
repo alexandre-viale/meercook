@@ -5,10 +5,14 @@ import 'package:meercook/utils/callbacks.dart';
 
 class SliverNav extends StatefulWidget {
   const SliverNav(
-      {Key? key, required this.onSearch, required this.onStopSearch})
+      {Key? key,
+      required this.onSearch,
+      required this.onStopSearch,
+      required this.onRecipeCreated})
       : super(key: key);
   final StringCallback onSearch;
   final VoidCallback onStopSearch;
+  final VoidCallback onRecipeCreated;
   @override
   State<SliverNav> createState() => _SliverNavState();
 }
@@ -50,13 +54,14 @@ class _SliverNavState extends State<SliverNav> {
       trailing: CupertinoButton(
         padding: EdgeInsets.zero,
         child: const Icon(CupertinoIcons.add),
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          await Navigator.push(
             context,
             CupertinoPageRoute(
               builder: (context) => RecipeEditor(recipe: Recipe()),
             ),
           );
+          widget.onRecipeCreated();
         },
       ),
     );

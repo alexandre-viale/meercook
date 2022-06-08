@@ -2,8 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meercook/model/storer.dart';
 import 'package:meercook/pages/login_page.dart';
-import 'package:meercook/pages/recipes/pages/recipe_details.dart';
-import 'package:meercook/pages/recipes/pages/recipe_editor.dart';
+
 import 'package:meercook/pages/recipes/recipes.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'dart:io' show Platform;

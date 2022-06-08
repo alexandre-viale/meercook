@@ -24,14 +24,6 @@ Future<dynamic> customRequest({
     if (requestMethod == get) {
       response = await requestMethod(uri, headers: headers);
     } else {
-      print('Request body: $body');
-      print('Request headers: $headers');
-      print('Request uri: $uri');
-      print(await requestMethod(
-        uri,
-        headers: headers,
-        body: body,
-      ));
       response = await requestMethod(
         uri,
         headers: headers,

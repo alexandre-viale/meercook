@@ -41,21 +41,23 @@ class _RecipesState extends State<Recipes> {
       child: CustomScrollView(
         slivers: [
           SliverNav(
-            onSearch: (filterValue) {
-              setState(() {
-                recipesList = savedRecipesList
-                    .where((recipe) => recipe.title
-                        .toLowerCase()
-                        .contains(filterValue.toLowerCase()))
-                    .toList();
-              });
-            },
-            onStopSearch: () => setState(
-              () {
-                recipesList = savedRecipesList;
+              onSearch: (filterValue) {
+                setState(() {
+                  recipesList = savedRecipesList
+                      .where((recipe) => recipe.title
+                          .toLowerCase()
+                          .contains(filterValue.toLowerCase()))
+                      .toList();
+                });
               },
-            ),
-          ),
+              onStopSearch: () => setState(
+                    () {
+                      recipesList = savedRecipesList;
+                    },
+                  ),
+              onRecipeCreated: () => setState(() {
+                    recipesList = savedRecipesList = globalRecipesList;
+                  })),
           CupertinoSliverRefreshControl(
             onRefresh: () async {
               await fetchRecipes();
@@ -76,13 +78,12 @@ class _RecipesState extends State<Recipes> {
                               ),
                             ),
                           );
-                          print(globalRecipesList);
                           setState(() {
                             recipesList = savedRecipesList = globalRecipesList;
                           });
                         },
                         onDelete: () async {
-                          await deleteRecipe(recipesList[index].id!);
+                          deleteRecipe(recipesList[index].id!);
                           setState(() {
                             recipesList.removeAt(index);
                           });

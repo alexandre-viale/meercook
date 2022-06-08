@@ -25,8 +25,10 @@ class _DescriptionEditorState extends State<DescriptionEditor> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Description',
-            style: CupertinoTheme.of(context).textTheme.navTitleTextStyle),
+        Text(
+          'Description',
+          style: CupertinoTheme.of(context).textTheme.navTitleTextStyle,
+        ),
         const SizedBox(height: 5),
         CupertinoTextField(
           minLines: null,

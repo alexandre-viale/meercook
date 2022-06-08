@@ -1,26 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meercook/model/ingredient.dart';
 import 'package:meercook/model/recipe.dart';
+import 'package:meercook/utils/callbacks.dart';
 
 class IngredientsEditor extends StatefulWidget {
-  const IngredientsEditor({Key? key, required this.recipe}) : super(key: key);
+  const IngredientsEditor({
+    Key? key,
+    required this.recipe,
+    required this.onModified,
+  }) : super(key: key);
   final Recipe recipe;
+  final IngredientListCallBack onModified;
   @override
   State<IngredientsEditor> createState() => _IngredientsEditorState();
 }
 
 class _IngredientsEditorState extends State<IngredientsEditor> {
   List<Ingredient> ingredients = [];
-  final Map<String, TextEditingController> _ingredientControllers = {};
 
   @override
   void initState() {
-    super.initState();
     ingredients = widget.recipe.ingredients;
-    for (final ingredient in ingredients) {
-      _ingredientControllers[ingredient.id.toString()] =
-          TextEditingController(text: ingredient.text);
-    }
+    super.initState();
   }
 
   @override
@@ -45,13 +46,18 @@ class _IngredientsEditorState extends State<IngredientsEditor> {
                     setState(() {
                       ingredients.removeAt(index);
                     });
+                    widget.onModified(ingredients);
                   },
                 ),
                 maxLines: 1,
                 minLines: 1,
                 expands: false,
                 controller:
-                    _ingredientControllers[ingredients[index].id.toString()],
+                    TextEditingController(text: ingredients[index].text),
+                onChanged: (value) {
+                  ingredients[index].text = value;
+                  widget.onModified(ingredients);
+                },
                 placeholder: 'Ingrédient',
               ),
             );
@@ -68,11 +74,13 @@ class _IngredientsEditorState extends State<IngredientsEditor> {
               ),
             ],
           ),
-          onPressed: () => setState(
-            () => ingredients.add(
-              Ingredient(recipeId: widget.recipe.id!),
-            ),
-          ),
+          onPressed: () {
+            setState(
+              () => ingredients.add(
+                Ingredient(recipeId: widget.recipe.id, text: ''),
+              ),
+            );
+          },
         ),
       ],
     );

@@ -18,7 +18,31 @@ Future<List<Ingredient>> getIngredientsByRecipeId(recipeId) async {
     }
     return [];
   } catch (e) {
-    print(e);
-    return [];
+    rethrow;
+  }
+}
+
+Future<bool> saveIngredientsByRecipeId(recipeId, ingredients) async {
+  try {
+    const jsonEncoder = JsonEncoder();
+    final response = await customRequest(
+        requestMethod: post,
+        path: '/recipes/ingredients/save/$recipeId',
+        body: {
+          'ingredients': jsonEncoder.convert(
+            ingredients.map((ingredient) {
+              return {
+                'text': ingredient.text,
+              };
+            }).toList(),
+          )
+        });
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    rethrow;
   }
 }

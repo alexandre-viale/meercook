@@ -81,24 +81,31 @@ class _RecipeDetailsState extends State<RecipeDetails> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Description',
-                    style:
-                        CupertinoTheme.of(context).textTheme.navTitleTextStyle,
-                  ),
-                  const SizedBox(height: 10),
                   _recipe.description == ''
                       ? const SizedBox.shrink()
-                      : Text(
-                          _recipe.description,
-                          style: const TextStyle(
-                            fontSize: 16,
-                          ),
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Description',
+                              style: CupertinoTheme.of(context)
+                                  .textTheme
+                                  .navTitleTextStyle,
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              _recipe.description,
+                              style: const TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Divider(
+                              color: CupertinoTheme.of(context)
+                                  .primaryContrastingColor,
+                            ),
+                          ],
                         ),
-                  const SizedBox(height: 10),
-                  Divider(
-                    color: CupertinoTheme.of(context).primaryContrastingColor,
-                  ),
                   const SizedBox(height: 10),
                   Text(
                     'Ingrédients',
