@@ -31,6 +31,7 @@ class _DescriptionEditorState extends State<DescriptionEditor> {
         ),
         const SizedBox(height: 5),
         CupertinoTextField(
+          textCapitalization: TextCapitalization.sentences,
           minLines: null,
           maxLines: null,
           expands: true,

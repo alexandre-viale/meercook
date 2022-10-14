@@ -24,3 +24,29 @@ Future<List<RecipeStep>> getStepsByRecipeId(recipeId) async {
     return [];
   }
 }
+
+Future<bool> saveStepsByRecipeId(recipeId, steps) async {
+  try {
+    const jsonEncoder = JsonEncoder();
+    final response = await customRequest(
+        requestMethod: post,
+        path: '/recipes/steps/save/$recipeId',
+        body: {
+          'steps': jsonEncoder.convert(
+            steps.map((step) {
+              return {
+                'text': step.text,
+                'sortId': step.sortId,
+              };
+            }).toList(),
+          )
+        });
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    rethrow;
+  }
+}

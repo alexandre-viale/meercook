@@ -17,10 +17,13 @@ class IngredientsEditor extends StatefulWidget {
 
 class _IngredientsEditorState extends State<IngredientsEditor> {
   List<Ingredient> ingredients = [];
-
+  List<FocusNode> focusNodes = [];
   @override
   void initState() {
     ingredients = widget.recipe.ingredients;
+    for (var i = 0; i < ingredients.length; i++) {
+      focusNodes.add(FocusNode());
+    }
     super.initState();
   }
 
@@ -39,12 +42,15 @@ class _IngredientsEditorState extends State<IngredientsEditor> {
             return Padding(
               padding: const EdgeInsets.only(bottom: 5.0),
               child: CupertinoTextField(
+                focusNode: focusNodes[index],
+                textCapitalization: TextCapitalization.sentences,
                 suffix: CupertinoButton(
                   padding: const EdgeInsets.all(0),
                   child: const Icon(CupertinoIcons.clear_thick_circled),
                   onPressed: () {
                     setState(() {
                       ingredients.removeAt(index);
+                      focusNodes.removeAt(index);
                     });
                     widget.onModified(ingredients);
                   },
@@ -57,6 +63,23 @@ class _IngredientsEditorState extends State<IngredientsEditor> {
                 onChanged: (value) {
                   ingredients[index].text = value;
                   widget.onModified(ingredients);
+                },
+                textInputAction: TextInputAction.done,
+                onSubmitted: (value) {
+                  if (!ingredients.asMap().containsKey(index + 1) &&
+                      value.isNotEmpty) {
+                    setState(() {
+                      ingredients.add(Ingredient(text: ''));
+                      focusNodes.add(FocusNode());
+                    });
+                    focusNodes[index + 1].requestFocus();
+                  }
+                  if (value.isEmpty) {
+                    setState(() {
+                      ingredients.removeAt(index);
+                      focusNodes.removeAt(index);
+                    });
+                  }
                 },
                 placeholder: 'Ingrédient',
               ),
@@ -76,10 +99,14 @@ class _IngredientsEditorState extends State<IngredientsEditor> {
           ),
           onPressed: () {
             setState(
-              () => ingredients.add(
-                Ingredient(recipeId: widget.recipe.id, text: ''),
-              ),
+              () {
+                ingredients.add(
+                  Ingredient(text: ''),
+                );
+                focusNodes.add(FocusNode());
+              },
             );
+            focusNodes[focusNodes.length - 1].requestFocus();
           },
         ),
       ],

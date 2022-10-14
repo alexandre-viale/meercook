@@ -1,13 +1,13 @@
 class RecipeStep {
   int? id;
   String text;
-  int recipeId;
+  int? recipeId;
   int sortId;
 
   RecipeStep({
     this.id,
     this.text = '',
-    required this.recipeId,
+    this.recipeId,
     required this.sortId,
   });
 

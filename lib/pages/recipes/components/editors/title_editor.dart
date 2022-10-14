@@ -30,6 +30,7 @@ class _TitleEditorState extends State<TitleEditor> {
         ),
         const SizedBox(height: 5),
         CupertinoTextField(
+          textCapitalization: TextCapitalization.sentences,
           controller: _controller,
           placeholder: 'Titre',
           onChanged: (value) {

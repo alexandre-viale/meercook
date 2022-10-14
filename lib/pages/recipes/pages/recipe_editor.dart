@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meercook/globals.dart';
+import 'package:meercook/model/ingredient.dart';
 import 'package:meercook/model/recipe.dart';
 import 'package:meercook/pages/recipes/components/editors/description_editor.dart';
 import 'package:meercook/pages/recipes/components/editors/ingredients_editor.dart';
@@ -43,6 +44,12 @@ class _RecipeEditorState extends State<RecipeEditor> {
         fetching = false;
       });
     }
+  }
+
+  void removeEmptyIngredients() {
+    _recipe.ingredients = _recipe.ingredients
+        .where((ingredient) => ingredient.text != '')
+        .toList();
   }
 
   @override
@@ -136,7 +143,12 @@ class _RecipeEditorState extends State<RecipeEditor> {
                     const SizedBox(height: 10),
                     fetching
                         ? const CupertinoActivityIndicator()
-                        : StepsEditor(recipe: _recipe),
+                        : StepsEditor(
+                            recipe: _recipe,
+                            onModified: (steps) {
+                              _recipe.steps = steps;
+                            },
+                          ),
                   ],
                 ),
               ),
@@ -158,17 +170,28 @@ class _RecipeEditorState extends State<RecipeEditor> {
                     setState(() {
                       saving = true;
                     });
+
                     int? insertId = await saveRecipe(_recipe);
                     _recipe.id ??= insertId;
+
+                    await saveStepsByRecipeId(_recipe.id, _recipe.steps);
+
+                    removeEmptyIngredients();
+
                     await saveIngredientsByRecipeId(
                         _recipe.id, _recipe.ingredients);
+
                     _recipe.ingredients =
                         await getIngredientsByRecipeId(_recipe.id);
+
                     globalRecipesList
                         .removeWhere((element) => element.id == _recipe.id);
+
                     globalRecipesList.add(_recipe);
+
                     globalRecipesList
                         .sort((a, b) => a.title.compareTo(b.title));
+
                     if (_recipe.id == null) {
                       Navigator.pop(context);
                     } else {
