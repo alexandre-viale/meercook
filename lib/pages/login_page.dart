@@ -25,6 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   };
 
   void login() async {
+    print('hey');
     if (emailController.text == '' ||
         passwordController.text == '' ||
         isButtonDisabled) {
@@ -38,6 +39,7 @@ class _LoginPageState extends State<LoginPage> {
       password: passwordController.text,
     );
     dynamic res = await user.login();
+    print(res);
     res != 404 ? emailController.text = '' : null;
     res != 403 ? passwordController.text = '' : null;
     setState(() {
