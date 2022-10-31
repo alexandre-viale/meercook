@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:image/image.dart' as img;
 import 'package:meercook/globals.dart';
-import 'package:meercook/model/ingredient.dart';
 import 'package:meercook/model/recipe.dart';
 import 'package:meercook/pages/recipes/components/editors/description_editor.dart';
 import 'package:meercook/pages/recipes/components/editors/ingredients_editor.dart';
+import 'package:meercook/pages/recipes/components/editors/photo_editor.dart';
 import 'package:meercook/pages/recipes/components/editors/steps_editor.dart';
 import 'package:meercook/pages/recipes/components/editors/title_editor.dart';
 import 'package:meercook/services/ingredient_service.dart';
@@ -24,6 +27,8 @@ class _RecipeEditorState extends State<RecipeEditor> {
   bool fetching = true;
   late Recipe _recipe;
   bool saving = false;
+  dynamic image = const AssetImage('assets/img/login_background.jpg');
+
   @override
   void initState() {
     _recipe = Recipe(
@@ -62,26 +67,37 @@ class _RecipeEditorState extends State<RecipeEditor> {
               previousPageTitle: 'Annuler',
               largeTitle: _recipe.id == null
                   ? const Text('Nouvelle recette')
-                  : Text('Modifier ' + widget.recipe.title),
+                  : Text('Modifier ${widget.recipe.title}'),
             ),
             SliverToBoxAdapter(
               child: Hero(
                 tag: 'recipe_${_recipe.id}',
                 child: Container(
-                  margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  margin: const EdgeInsets.fromLTRB(16, 16, 0, 0),
                   height: 250,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(30)),
                     image: DecorationImage(
-                      image: AssetImage('assets/img/login_background.jpg'),
+                      image: image,
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
               ),
             ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 16),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                child: PhotoEditor(
+                  onImageSelected: (xFile) async {
+                    final path = xFile.path;
+                    final bytes = await File(path).readAsBytes();
+                    setState(() {
+                      image = img.decodeImage(bytes);
+                    });
+                  },
+                ),
+              ),
             ),
             SliverToBoxAdapter(
               child: Padding(

@@ -135,7 +135,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                           return Padding(
                             padding: const EdgeInsets.only(top: 3.0),
                             child: Text(
-                              '- ' + ingredients[index].text,
+                              '- ${ingredients[index].text}',
                               style: const TextStyle(
                                 fontSize: 16,
                               ),
@@ -178,7 +178,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                           return Padding(
                             padding: const EdgeInsets.only(top: 3.0),
                             child: Text(
-                              '${index + 1} - ' + steps[index].text,
+                              '${index + 1} - ${steps[index].text}',
                               style: const TextStyle(
                                 fontSize: 16,
                               ),

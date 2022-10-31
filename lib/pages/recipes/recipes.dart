@@ -27,7 +27,7 @@ class _RecipesState extends State<Recipes> {
   fetchRecipes() async {
     setState(() => fetching = true);
     List<Recipe> _recipesList = await getRecipes();
-    _recipesList.sort((a, b) => a.title.compareTo(b.title));
+    recipesList.sort((a, b) => a.title.compareTo(b.title));
     setState(() {
       recipesList = savedRecipesList = _recipesList;
       fetching = false;

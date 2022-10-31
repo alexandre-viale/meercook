@@ -64,12 +64,12 @@ class _RecipeElementState extends State<RecipeElement> {
                       onPressed: () => Navigator.pop(context),
                     ),
                     CupertinoDialogAction(
-                      child: const Text('Supprimer'),
                       isDestructiveAction: true,
                       onPressed: () async {
                         Navigator.pop(context);
                         widget.onDelete();
                       },
+                      child: const Text('Supprimer'),
                     ),
                   ],
                 );
